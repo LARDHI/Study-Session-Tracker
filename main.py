@@ -29,13 +29,13 @@ def StartSession(sessions_list: list):
     print('Session Started Successfully!\n')
     return sessions_list
 def EndSession(sessions_list: list):
-    current_session = sessions_list[-1]
     if len(sessions_list) == 0:
         print('No Active Session Found! Please Start a Session First.\n')
         return
+    current_session = sessions_list[-1]
     end_time = time.time()
     duration = end_time - current_session['Start Time']
-    current_session['Duration'] = int(round(duration / 60, 2))
+    current_session['Duration'] = int(round(duration / 60))
     print('Session Ended Successfully!\n')
     return sessions_list
 def ViewSessions(sessions_list: list):
@@ -44,6 +44,24 @@ def ViewSessions(sessions_list: list):
         return
     for session in sessions_list:
         print(f"{str(session['Date']).ljust(15)}| {str(session['Subject']).ljust(15)}| {str(session['Duration'])} minutes")
+def StudyStatistics():
+    if len(sessions_list) == 0:
+        print('No Session Found! Please Start and End a Session First.\n')
+        return
+    total_duration = 0
+    longest_session = None
+    most_frequent_subject = None
+    most_frequent_subject_count = 0
+    for session in sessions_list:
+        total_duration += session['Duration']
+        if longest_session is None or session['Duration'] > longest_session['Duration']:
+            longest_session = session
+        if most_frequent_subject is None or sessions_list.count(session['Subject']) > most_frequent_subject_count:
+            most_frequent_subject = session['Subject']
+            most_frequent_subject_count = sessions_list.count(session['Subject'])
+    print(f'Total Study Time: {total_duration} minutes')
+    print(f'Average session duration: {total_duration / len(sessions_list)} minutes')
+    print(f'Longest Session: {most_frequent_subject} with {longest_session} minutes')
 sessions_list = list()
 while True:
     choice = Menu()
@@ -53,8 +71,8 @@ while True:
         EndSession(sessions_list)
     elif choice == '3' or choice == 'View':
         ViewSessions(sessions_list)
-    #elif choice == '4' or choice == 'Study':
-        #StudyStatistics()
+    elif choice == '4' or choice == 'Study':
+        StudyStatistics()
     elif choice == '5' or choice == 'Exit':
         exit()
     elif choice == '6':
